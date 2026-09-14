@@ -1,0 +1,889 @@
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+if CoreGui:FindFirstChild("TVX_CustomUI") then
+    CoreGui.TVX_CustomUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "TVX_CustomUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local function CreateAnimatedStroke(Object)
+    local Stroke = Instance.new("UIStroke")
+    Stroke.Parent = Object
+    Stroke.Color = Color3.fromRGB(255, 255, 255)
+    Stroke.Thickness = 3
+    Stroke.Transparency = 0
+    Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+    Stroke.LineJoinMode = Enum.LineJoinMode.Round
+
+    local Gradient = Instance.new("UIGradient")
+    Gradient.Parent = Stroke
+    Gradient.Rotation = 0
+
+    Gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+        ColorSequenceKeypoint.new(0.15, Color3.fromRGB(5, 0, 10)),
+        ColorSequenceKeypoint.new(0.35, Color3.fromRGB(35, 0, 55)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(85, 20, 120)),
+        ColorSequenceKeypoint.new(0.65, Color3.fromRGB(35, 0, 55)),
+        ColorSequenceKeypoint.new(0.85, Color3.fromRGB(5, 0, 10)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+    }
+
+    local AnimationInfo = TweenInfo.new(
+        7,
+        Enum.EasingStyle.Linear,
+        Enum.EasingDirection.InOut,
+        -1
+    )
+
+    local Track = TweenService:Create(
+        Gradient,
+        AnimationInfo,
+        {Rotation = 360}
+    )
+
+    Track:Play()
+end
+
+local NotificationContainer = Instance.new("Frame")
+NotificationContainer.Name = "TVX_NotificationContainer"
+NotificationContainer.Parent = ScreenGui
+NotificationContainer.BackgroundTransparency = 1
+NotificationContainer.Position = UDim2.new(1, -290, 1, -110)
+NotificationContainer.Size = UDim2.new(0, 270, 0, 90)
+NotificationContainer.ZIndex = 100
+
+local NotifLayout = Instance.new("UIListLayout")
+NotifLayout.Parent = NotificationContainer
+NotifLayout.SortOrder = Enum.SortOrder.LayoutOrder
+NotifLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+NotifLayout.Padding = UDim.new(0, 8)
+
+local function ShowTVXNotification(titleText, bodyText, targetUserId)
+    local NotifFrame = Instance.new("Frame")
+    NotifFrame.Parent = NotificationContainer
+    NotifFrame.BackgroundColor3 = Color3.fromRGB(15, 5, 25)
+    NotifFrame.BackgroundTransparency = 0.2
+    NotifFrame.Size = UDim2.new(1, 0, 0, 65)
+    NotifFrame.Position = UDim2.new(1, 50, 0, 0)
+    NotifFrame.ZIndex = 101
+
+    local NotifCorner = Instance.new("UICorner")
+    NotifCorner.CornerRadius = UDim.new(0, 12)
+    NotifCorner.Parent = NotifFrame
+
+    CreateAnimatedStroke(NotifFrame)
+
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Parent = NotifFrame
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Position = UDim2.new(0, 12, 0, 8)
+    TitleLabel.Size = UDim2.new(1, -24, 0, 20)
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.Text = titleText
+    TitleLabel.TextColor3 = Color3.fromRGB(180, 100, 255)
+    TitleLabel.TextSize = 13
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.ZIndex = 102
+
+    local BodyLabel = Instance.new("TextLabel")
+    BodyLabel.Parent = NotifFrame
+    BodyLabel.BackgroundTransparency = 1
+    BodyLabel.Position = UDim2.new(0, 12, 0, 28)
+    BodyLabel.Size = UDim2.new(1, targetUserId and -65 or -24, 0, 30)
+    BodyLabel.Font = Enum.Font.Gotham
+    BodyLabel.Text = bodyText
+    BodyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    BodyLabel.TextSize = 11
+    BodyLabel.TextWrapped = true
+    BodyLabel.TextXAlignment = Enum.TextXAlignment.Left
+    BodyLabel.ZIndex = 102
+
+    if targetUserId then
+        local NotifImage = Instance.new("ImageLabel")
+        NotifImage.Parent = NotifFrame
+        NotifImage.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        NotifImage.BackgroundTransparency = 0.2
+        NotifImage.Position = UDim2.new(1, -52, 0, 12)
+        NotifImage.Size = UDim2.new(0, 40, 0, 40)
+        NotifImage.ZIndex = 102
+
+        local NotifImgCorner = Instance.new("UICorner")
+        NotifImgCorner.CornerRadius = UDim.new(0, 8)
+        NotifImgCorner.Parent = NotifImage
+
+        CreateAnimatedStroke(NotifImage)
+
+        pcall(function()
+            local content = Players:GetUserThumbnailAsync(targetUserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+            NotifImage.Image = content
+        end)
+    end
+
+    local Sound = Instance.new("Sound")
+    Sound.Parent = NotifFrame
+    Sound.SoundId = "rbxassetid://9900000000"
+    Sound.Volume = 1
+    pcall(function()
+        Sound:Play()
+    end)
+
+    local slideIn = TweenService:Create(NotifFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0)})
+    slideIn:Play()
+
+    task.delay(3, function()
+        local slideOut = TweenService:Create(NotifFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(1, 50, 0, 0)})
+        slideOut:Play()
+        slideOut.Completed:Wait()
+        NotifFrame:Destroy()
+    end)
+end
+
+local FloatingButton = Instance.new("TextButton")
+FloatingButton.Name = "TVX_FloatingButton"
+FloatingButton.Parent = ScreenGui
+FloatingButton.BackgroundColor3 = Color3.fromRGB(55, 20, 85)
+FloatingButton.BackgroundTransparency = 0.4
+FloatingButton.AnchorPoint = Vector2.new(0, 0.5)
+FloatingButton.Position = UDim2.new(0, 15, 0.5, 0)
+FloatingButton.Size = UDim2.new(0, 45, 0, 45)
+FloatingButton.Font = Enum.Font.GothamBold
+FloatingButton.Text = "TVX"
+FloatingButton.TextColor3 = Color3.fromRGB(138, 43, 226)
+FloatingButton.TextTransparency = 0.3
+FloatingButton.TextSize = 20
+FloatingButton.Active = true
+FloatingButton.Draggable = true
+
+local FloatCorner = Instance.new("UICorner")
+FloatCorner.CornerRadius = UDim.new(0, 12)
+FloatCorner.Parent = FloatingButton
+
+CreateAnimatedStroke(FloatingButton)
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 5, 25)
+MainFrame.BackgroundTransparency = 0.25
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Rotation = 0
+MainFrame.Visible = true
+
+local OpenTween = TweenService:Create(
+    MainFrame,
+    TweenInfo.new(1.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+    {Rotation = 0}
+)
+
+FloatingButton.MouseButton1Click:Connect(function()
+    if not MainFrame.Visible then
+        MainFrame.Visible = true
+        MainFrame.Rotation = -360
+        OpenTween:Play()
+    else
+        MainFrame.Visible = false
+    end
+    
+    local growTween = TweenService:Create(FloatingButton, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 52, 0, 52), TextSize = 23, Rotation = 10})
+    growTween:Play()
+    growTween.Completed:Wait()
+    local shrinkTween = TweenService:Create(FloatingButton, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 45, 0, 45), TextSize = 20, Rotation = 0})
+    shrinkTween:Play()
+end)
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 16)
+UICorner.Parent = MainFrame
+
+CreateAnimatedStroke(MainFrame)
+
+local TitleBar = Instance.new("TextLabel")
+TitleBar.Parent = MainFrame
+TitleBar.BackgroundColor3 = Color3.fromRGB(25, 10, 40)
+TitleBar.BackgroundTransparency = 0.3
+TitleBar.Size = UDim2.new(1, 0, 0, 45)
+TitleBar.Font = Enum.Font.GothamBold
+TitleBar.Text = "TVX"
+TitleBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleBar.TextSize = 16
+TitleBar.TextXAlignment = Enum.TextXAlignment.Center
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 16)
+TitleCorner.Parent = TitleBar
+
+CreateAnimatedStroke(TitleBar)
+
+local Sidebar = Instance.new("ScrollingFrame")
+Sidebar.Parent = MainFrame
+Sidebar.BackgroundColor3 = Color3.fromRGB(20, 8, 32)
+Sidebar.BackgroundTransparency = 0.4
+Sidebar.Position = UDim2.new(0, 15, 0, 60)
+Sidebar.Size = UDim2.new(0, 140, 1, -75)
+Sidebar.CanvasSize = UDim2.new(0, 0, 0, 300)
+Sidebar.ScrollBarThickness = 4
+
+local SidebarCorner = Instance.new("UICorner")
+SidebarCorner.CornerRadius = UDim.new(0, 12)
+SidebarCorner.Parent = Sidebar
+
+CreateAnimatedStroke(Sidebar)
+
+local SidebarPadding = Instance.new("UIPadding")
+SidebarPadding.Parent = Sidebar
+SidebarPadding.PaddingTop = UDim.new(0, 10)
+SidebarPadding.PaddingLeft = UDim.new(0, 10)
+SidebarPadding.PaddingRight = UDim.new(0, 10)
+
+local SidebarLayout = Instance.new("UIListLayout")
+SidebarLayout.Parent = Sidebar
+SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+SidebarLayout.Padding = UDim.new(0, 10)
+
+local ContentArea = Instance.new("Folder")
+ContentArea.Name = "ContentArea"
+ContentArea.Parent = MainFrame
+
+-- القائمة الرئيسية | Home (LayoutOrder = 1)
+local HomeSectionButton = Instance.new("TextButton")
+HomeSectionButton.Name = "Home_Section_Button"
+HomeSectionButton.Parent = Sidebar
+HomeSectionButton.BackgroundColor3 = Color3.fromRGB(35, 15, 55)
+HomeSectionButton.BackgroundTransparency = 0.3
+HomeSectionButton.BorderSizePixel = 0
+HomeSectionButton.Size = UDim2.new(1, 0, 0, 35)
+HomeSectionButton.LayoutOrder = 1
+HomeSectionButton.Font = Enum.Font.GothamBold
+HomeSectionButton.Text = "القائمة الرئيسية | Home"
+HomeSectionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+HomeSectionButton.TextSize = 10
+HomeSectionButton.TextWrapped = true
+
+local HomeButtonCorner = Instance.new("UICorner")
+HomeButtonCorner.CornerRadius = UDim.new(0, 10)
+HomeButtonCorner.Parent = HomeSectionButton
+
+CreateAnimatedStroke(HomeSectionButton)
+
+local Homespage = Instance.new("ScrollingFrame")
+Homespage.Name = "Homespage"
+Homespage.Parent = ContentArea
+Homespage.BackgroundTransparency = 1
+Homespage.Position = UDim2.new(0, 175, 0, 65)
+Homespage.Size = UDim2.new(1, -190, 1, -75)
+Homespage.Visible = true
+Homespage.CanvasSize = UDim2.new(0, 0, 0, 330)
+Homespage.ScrollBarThickness = 4
+
+local LocalPlayer = Players.LocalPlayer
+local ver = "1.0"
+local capturedR, secondaryCapturedG, b = 180, 100, 255
+
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Name = "Profile_Image"
+imageLabel.Parent = Homespage
+imageLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+imageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+imageLabel.BorderSizePixel = 0
+imageLabel.Position = UDim2.new(0, 25, 0, 25)
+imageLabel.Size = UDim2.new(0, 100, 0, 100)
+local success, thumbnail = pcall(function()
+    return Players:GetUserThumbnailAsync(LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+end)
+imageLabel.Image = success and thumbnail or "rbxassetid://10818605405"
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.2, 0)
+uiCorner.Parent = imageLabel
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Color = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+uiStroke.Thickness = 1
+uiStroke.Parent = imageLabel
+
+for _, child in ipairs(Homespage:GetChildren()) do
+    if child:IsA("GuiObject") then
+        local clone = uiCorner:Clone()
+        clone.Parent = child
+        clone.CornerRadius = UDim.new(0.1, 0)
+    end
+end
+
+local valueLabel = Instance.new("TextLabel")
+valueLabel.Name = "Welcome_Label"
+valueLabel.Parent = Homespage
+valueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+valueLabel.BackgroundTransparency = 1
+valueLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+valueLabel.BorderSizePixel = 0
+valueLabel.Position = UDim2.new(0, 135, 0, 25)
+valueLabel.Size = UDim2.new(0, 210, 0, 100)
+valueLabel.Font = Enum.Font.GothamBold
+
+local name = (#LocalPlayer.Name < #LocalPlayer.DisplayName and LocalPlayer.Name or LocalPlayer.DisplayName):sub(1, 9):lower()
+local alternateText = name:sub(1, 1):upper() .. name:sub(2)
+
+local function WhatTime()
+    local hour = os.date("*t").hour
+    if hour >= 4 and hour < 12 then
+        return "light"
+    else
+        return "dark"
+    end
+end
+
+if WhatTime() == "light" then
+    valueLabel.Text = "صباح النور " .. alternateText .. "@" .. "\nاضغط [B] لاخفاء الواجهة"
+else
+    valueLabel.Text = "مساء النور " .. alternateText .. "@" .. "\nاضغط [B] لاخفاء الواجهة"
+end
+
+valueLabel.TextColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+valueLabel.TextSize = 21
+valueLabel.TextWrapped = true
+valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+valueLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+local frame = Instance.new("Frame")
+frame.Name = "Announce_Label_Frame"
+frame.Parent = Homespage
+frame.Size = UDim2.new(0, 350, 0, 150)
+frame.Position = UDim2.new(0, 25, 0, 150)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BackgroundTransparency = 0.15
+frame.BorderSizePixel = 0
+
+local Corner1 = Instance.new("UICorner")
+Corner1.CornerRadius = UDim.new(0, 10)
+Corner1.Parent = frame
+
+local Stroke1 = Instance.new("UIStroke")
+Stroke1.Color = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+Stroke1.Thickness = 1.5
+Stroke1.Transparency = 0.2
+Stroke1.Parent = frame
+
+local Title1 = Instance.new("TextLabel")
+Title1.Name = "Title1"
+Title1.Parent = frame
+Title1.Size = UDim2.new(1, -20, 0, 25)
+Title1.Position = UDim2.new(0, 10, 0, 5)
+Title1.BackgroundTransparency = 1
+Title1.Text = "مطورين السكربت"
+Title1.TextColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+Title1.Font = Enum.Font.GothamBold
+Title1.TextSize = 16
+Title1.TextXAlignment = Enum.TextXAlignment.Right
+
+local Title2 = Instance.new("TextLabel")
+Title2.Name = "Title2"
+Title2.Parent = frame
+Title2.Size = UDim2.new(1, -20, 0, 25)
+Title2.Position = UDim2.new(0, 10, 0, 5)
+Title2.BackgroundTransparency = 1
+Title2.Text = "XXXX"
+Title2.TextColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+Title2.Font = Enum.Font.GothamBold
+Title2.TextSize = 16
+Title2.TextXAlignment = Enum.TextXAlignment.Left
+
+local DevsFrame = Instance.new("Frame")
+DevsFrame.Parent = frame
+DevsFrame.Size = UDim2.new(1, -20, 1, -40)
+DevsFrame.Position = UDim2.new(0, 10, 0, 25)
+DevsFrame.BackgroundTransparency = 1
+
+local Grid = Instance.new("UIGridLayout")
+Grid.Parent = DevsFrame
+Grid.CellSize = UDim2.new(0, 70, 0, 70)
+Grid.CellPadding = UDim2.new(0, 10, 0, 10)
+Grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Grid.VerticalAlignment = Enum.VerticalAlignment.Center
+
+local RightsLabel = Instance.new("TextLabel")
+RightsLabel.Parent = frame
+RightsLabel.Size = UDim2.new(1, 0, 0, 10)
+RightsLabel.Position = UDim2.new(0, 0, 1, 1)
+RightsLabel.BackgroundTransparency = 1
+RightsLabel.Text = "© All rights reserved TVX"
+RightsLabel.TextSize = 9
+RightsLabel.Font = Enum.Font.Gotham
+RightsLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+RightsLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local VersionLabel = Instance.new("TextLabel")
+VersionLabel.Parent = frame
+VersionLabel.Size = UDim2.new(0.9, 0, 0, 10)
+VersionLabel.Position = UDim2.new(0, 34, 1, 1)
+VersionLabel.BackgroundTransparency = 1
+VersionLabel.Text = tostring("v" .. ver)
+VersionLabel.TextSize = 9
+VersionLabel.Font = Enum.Font.Gotham
+VersionLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+VersionLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+local function GetLocalAsset(url, displayValue)
+    local fileName = "DevImage_" .. tostring(displayValue) .. ".png"
+    local success, response = pcall(function()
+        return request({
+            Url = url,
+            Method = "GET"
+        })
+    end)
+
+    if not success or not response or response.StatusCode ~= 200 then
+        return nil
+    end
+
+    local writeSuccess = pcall(function()
+        writefile(fileName, response.Body)
+    end)
+
+    if not writeSuccess then
+        return nil
+    end
+
+    local success, asset = pcall(function()
+        return getcustomasset(fileName)
+    end)
+
+    return success and asset or nil
+end
+
+local function AddDeveloper(text, displayValue, secondaryText, alternateText, condition)
+    local getLocalAsset = displayValue
+    if tostring(displayValue):sub(1, 4) == "http" then
+        getLocalAsset = GetLocalAsset(displayValue, secondaryText)
+    end
+
+    local parent = Instance.new("Frame")
+    parent.Name = text .. "_Holder"
+    parent.BackgroundTransparency = 1
+    parent.Parent = DevsFrame
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Parent = parent
+    textLabel.Size = UDim2.new(1, 0, 0, 15)
+    textLabel.Position = UDim2.new(0, 0, 0, -16)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = text
+    textLabel.TextSize = 12
+    textLabel.Font = Enum.Font.Gotham
+    textLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+
+    local imageLabelDev = Instance.new("ImageLabel")
+    imageLabelDev.Name = "Developer"
+    imageLabelDev.Parent = parent
+    imageLabelDev.Size = UDim2.new(0.85, 0, 0.85, 0)
+    imageLabelDev.BackgroundTransparency = 1
+    imageLabelDev.ScaleType = Enum.ScaleType.Crop
+    imageLabelDev.Position = UDim2.new(0.5, 0, 0.45, 0)
+    imageLabelDev.AnchorPoint = Vector2.new(0.5, 0.5)
+    imageLabelDev.Image = getLocalAsset or ""
+
+    local imageCorner = Instance.new("UICorner")
+    imageCorner.CornerRadius = UDim.new(1, 0)
+    imageCorner.Parent = imageLabelDev
+
+    local stroke = uiStroke:Clone()
+    stroke.Transparency = 0.1
+    stroke.Color = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+    stroke.Parent = imageLabelDev
+
+    local textButton = Instance.new("TextButton")
+    textButton.Parent = parent
+    textButton.Size = UDim2.new(1, 0, 0, 12)
+    textButton.Position = UDim2.new(0, 0, 1, -7)
+    textButton.BackgroundTransparency = 1
+    textButton.Text = "@" .. secondaryText
+    textButton.TextSize = 10
+    textButton.Font = Enum.Font.Gotham
+    textButton.TextColor3 = Color3.fromRGB(114, 137, 218)
+    textButton.AutoButtonColor = false
+
+    if alternateText then
+        local altLabel = Instance.new("TextLabel")
+        altLabel.Parent = parent
+        altLabel.Size = UDim2.new(1, 0, 0, 12)
+        altLabel.Position = UDim2.new(0, 0, 1, 3)
+        altLabel.BackgroundTransparency = 1
+        altLabel.Text = alternateText
+        altLabel.TextSize = 10
+        altLabel.Font = Enum.Font.Gotham
+        altLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+        altLabel.TextXAlignment = Enum.TextXAlignment.Center
+    end
+
+    if condition then
+        textButton.MouseButton1Click:Connect(function()
+            setclipboard(secondaryText)
+            ShowTVXNotification("TVX System", "تم نسخ يوزر دسكورد المطور", 2)
+        end)
+    end
+end
+
+AddDeveloper("SA | ALONE 🇮🇶", "https://avatar-discord.vercel.app/api/pfp/889271863300206662/image", "0pei_", "مساعد السكربتر", true)
+AddDeveloper("TVX 🇸🇦", "https://avatar-discord.vercel.app/api/pfp/1373765797616291953/image", "t_v_x", "مطور السكربت", true)
+AddDeveloper("TRX 🇸🇦", "https://avatar-discord.vercel.app/api/pfp/1446138117076553824/image", "._trx", "اونر السيرفر", true)
+
+task.wait()
+
+spawn(function()
+    local NewsAnnounce = frame:Clone()
+    NewsAnnounce.Parent = Homespage
+    NewsAnnounce.Position = UDim2.new(0, 25, 0, 310)
+
+    for _, child in ipairs(NewsAnnounce:GetChildren()) do
+        if not child:IsA("UIStroke") and not child:IsA("UICorner") then
+            child:Destroy()
+        end
+    end
+end)
+
+
+local TargetSectionButton = Instance.new("TextButton")
+TargetSectionButton.Name = "Target_Section_Button"
+TargetSectionButton.Parent = Sidebar
+TargetSectionButton.BackgroundColor3 = Color3.fromRGB(35, 15, 55)
+TargetSectionButton.BackgroundTransparency = 0.3
+TargetSectionButton.BorderSizePixel = 0
+TargetSectionButton.Size = UDim2.new(1, 0, 0, 35)
+TargetSectionButton.LayoutOrder = 2
+TargetSectionButton.Font = Enum.Font.GothamBold
+TargetSectionButton.Text = "الاستهداف | Target"
+TargetSectionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TargetSectionButton.TextSize = 12
+TargetSectionButton.TextWrapped = true
+
+local TargetButtonCorner = Instance.new("UICorner")
+TargetButtonCorner.CornerRadius = UDim.new(0, 10)
+TargetButtonCorner.Parent = TargetSectionButton
+
+CreateAnimatedStroke(TargetSectionButton)
+
+local TargetPage = Instance.new("Frame")
+TargetPage.Name = "TargetPage"
+TargetPage.Parent = ContentArea
+TargetPage.BackgroundTransparency = 1
+TargetPage.Position = UDim2.new(0, 175, 0, 65)
+TargetPage.Size = UDim2.new(1, -190, 1, -75)
+TargetPage.Visible = false
+
+HomeSectionButton.MouseButton1Click:Connect(function()
+    Homespage.Visible = true
+    TargetPage.Visible = false
+end)
+
+TargetSectionButton.MouseButton1Click:Connect(function()
+    TargetPage.Visible = true
+    Homespage.Visible = false
+end)
+
+local alternateParent = TargetPage
+
+local secondaryImageLabel = Instance.new("ImageLabel")
+secondaryImageLabel.Name = "TargetImage"
+secondaryImageLabel.Parent = alternateParent
+secondaryImageLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+secondaryImageLabel.BackgroundTransparency = 0.2
+secondaryImageLabel.Position = UDim2.new(0, 10, 0, 10)
+secondaryImageLabel.Size = UDim2.new(0, 110, 0, 110)
+secondaryImageLabel.Image = "rbxassetid://10818605405"
+
+local ImageCorner = Instance.new("UICorner")
+ImageCorner.CornerRadius = UDim.new(0, 12)
+ImageCorner.Parent = secondaryImageLabel
+
+CreateAnimatedStroke(secondaryImageLabel)
+
+local additionalParent = Instance.new("TextBox")
+additionalParent.Name = "TargetName_Input"
+additionalParent.Parent = alternateParent
+additionalParent.BackgroundColor3 = Color3.fromRGB(25, 10, 40)
+additionalParent.BackgroundTransparency = 0.3
+additionalParent.Position = UDim2.new(0, 140, 0, 10)
+additionalParent.Size = UDim2.new(0, 260, 0, 35)
+additionalParent.Font = Enum.Font.Gotham
+additionalParent.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+additionalParent.PlaceholderText = "@target..."
+additionalParent.Text = ""
+additionalParent.TextColor3 = Color3.fromRGB(255, 255, 255)
+additionalParent.TextSize = 14
+additionalParent.TextWrapped = true
+
+local InputCorner = Instance.new("UICorner")
+InputCorner.CornerRadius = UDim.new(0, 10)
+InputCorner.Parent = additionalParent
+
+CreateAnimatedStroke(additionalParent)
+
+local ImageButton = Instance.new("ImageButton")
+ImageButton.Name = "ClickTargetTool_Button"
+ImageButton.Parent = additionalParent
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BackgroundTransparency = 1
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(1, -38, 0, 2)
+ImageButton.Size = UDim2.new(0, 30, 0, 30)
+ImageButton.Image = "rbxassetid://13769558274"
+
+local secondaryValueLabel = Instance.new("TextLabel")
+secondaryValueLabel.Name = "UserIDTargetLabel"
+secondaryValueLabel.Parent = alternateParent
+secondaryValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+secondaryValueLabel.BackgroundTransparency = 1
+secondaryValueLabel.BorderSizePixel = 0
+secondaryValueLabel.Position = UDim2.new(0, 140, 0, 60)
+secondaryValueLabel.Size = UDim2.new(0, 260, 0, 130)
+secondaryValueLabel.Font = Enum.Font.GothamBold
+secondaryValueLabel.Text = "UserID: -\n\nUser: -\n\nJoined: -"
+secondaryValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+secondaryValueLabel.TextSize = 13
+secondaryValueLabel.TextWrapped = true
+secondaryValueLabel.TextXAlignment = Enum.TextXAlignment.Left
+secondaryValueLabel.TextYAlignment = Enum.TextYAlignment.Top
+
+local targetPlayerGlobal = nil
+local savedMyCFrame = nil
+
+local function GetPlayer(nameInput)
+    local query = string.lower(nameInput or "")
+    query = query:gsub("^@", "")
+    query = query:gsub("%s+", "")
+    if query == "" then return nil end
+    for _, p in ipairs(Players:GetPlayers()) do
+        local pName = string.lower(p.Name)
+        local pDisp = string.lower(p.DisplayName)
+        if pName == query or pDisp == query or pName:find(query) or pDisp:find(query) then
+            return p
+        end
+    end
+    return nil
+end
+
+local function GetPlayerV2(nameInput)
+    local query = string.lower(nameInput or "")
+    query = query:gsub("^@", "")
+    query = query:gsub("%s+", "")
+    if query == "" then return Players.LocalPlayer end
+    for _, p in ipairs(Players:GetPlayers()) do
+        local pName = string.lower(p.Name)
+        local pDisp = string.lower(p.DisplayName)
+        if pName == query or pDisp == query or pName:find(query) or pDisp:find(query) then
+            return p
+        end
+    end
+    return Players.LocalPlayer
+end
+
+local BenxButton = Instance.new("TextButton")
+BenxButton.Name = "BenxButton"
+BenxButton.Parent = alternateParent
+BenxButton.BackgroundColor3 = Color3.fromRGB(25, 10, 40)
+BenxButton.BackgroundTransparency = 0.3
+BenxButton.Position = UDim2.new(0, 10, 0, 142)
+BenxButton.Size = UDim2.new(0, 110, 0, 32)
+BenxButton.Font = Enum.Font.GothamBold
+BenxButton.Text = "بانق عكسي"
+BenxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BenxButton.TextSize = 10
+BenxButton.TextWrapped = true
+
+local BenxCorner = Instance.new("UICorner")
+BenxCorner.CornerRadius = UDim.new(0, 10)
+BenxCorner.Parent = BenxButton
+
+CreateAnimatedStroke(BenxButton)
+
+local BenxIndicator = Instance.new("Frame")
+BenxIndicator.Name = "BenxIndicator"
+BenxIndicator.Parent = alternateParent
+BenxIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+BenxIndicator.Position = UDim2.new(0, 128, 0, 150)
+BenxIndicator.Size = UDim2.new(0, 14, 0, 14)
+BenxIndicator.Rotation = 0
+
+local IndicatorCorner = Instance.new("UICorner")
+IndicatorCorner.CornerRadius = UDim.new(0, 3)
+IndicatorCorner.Parent = BenxIndicator
+
+CreateAnimatedStroke(BenxIndicator)
+
+local indicatorRotatedState = false
+local function ToggleBenxIndicatorRotation()
+    indicatorRotatedState = not indicatorRotatedState
+    local targetRot = indicatorRotatedState and 180 or 0
+    local rotTween = TweenService:Create(BenxIndicator, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = targetRot})
+    rotTween:Play()
+end
+
+local function StopBenxFeature()
+    if getgenv().Benxme then
+        getgenv().Benxme = false
+        BenxIndicator.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        ToggleBenxIndicatorRotation()
+        pcall(function()
+            if savedMyCFrame and Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                Players.LocalPlayer.Character.HumanoidRootPart.CFrame = savedMyCFrame
+            end
+            if Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                Players.LocalPlayer.Character.Humanoid.Sit = false
+            end
+        end)
+    end
+end
+
+BenxButton.MouseButton1Click:Connect(function()
+    local targetNameText = additionalParent.Text
+    if targetNameText == "" then
+        ShowTVXNotification("TVX System", "لازم تكتب اسم الشخص عشان تقدر تستهدفه")
+        return
+    end
+
+    local player = GetPlayer(targetNameText)
+    if not player then
+        ShowTVXNotification("TVX System", "لازم تكتب اسم الشخص عشان تقدر تستهدفه")
+        return
+    end
+
+    if not getgenv().Benxme then
+        local displayValue = targetNameText
+        local secondaryDisplayValue = ""
+        local target = GetPlayerV2(tostring(secondaryDisplayValue))
+        if secondaryDisplayValue == "" or target == game.Players.LocalPlayer then
+            pcall(function()
+                if Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    savedMyCFrame = Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                end
+            end)
+            getgenv().Benxme = true
+            spawn(function()
+                local sum = -2
+                local sumNumber = 0.1
+                local number = -1
+
+                while getgenv().Benxme do
+                    pcall(function()
+                        local cFrameOption = player.Character:FindFirstChild("Torso") or player.Character:FindFirstChild("UpperTorso")
+                        if cFrameOption.Name == "Torso" then
+                            number = -0.75
+                        end
+
+                        game.Players.LocalPlayer.Character.Humanoid.Sit = true
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = cFrameOption.CFrame * CFrame.new(0, number, sum) * CFrame.Angles(math.rad(270), 0, 0)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+                        sum = sum + sumNumber
+
+                        if sum >= -1 or sum <= -2 then
+                            sumNumber = -sumNumber
+                        end
+                    end)
+                    task.wait()
+                end
+
+                pcall(function()
+                    game.Players.LocalPlayer.Character.Humanoid.Sit = false
+                end)
+            end)
+        end
+        BenxIndicator.BackgroundColor3 = Color3.fromRGB(50, 255, 50)
+        ToggleBenxIndicatorRotation()
+    else
+        StopBenxFeature()
+    end
+end)
+
+local function ResetTargetData()
+    targetPlayerGlobal = nil
+    additionalParent.Text = ""
+    secondaryValueLabel.Text = "UserID: \n\nUser: \n\nJoined: "
+    secondaryImageLabel.Image = "rbxassetid://10818605405"
+end
+
+local function ProcessTarget(inputName)
+    local query = string.lower(inputName or "")
+    query = query:gsub("^@", "")
+    query = query:gsub("%s+", "")
+    
+    local targetPlayer = nil
+    
+    if query == "ahmed" or query == "ahm" or query == "ah" or query == "a" then
+        for _, p in ipairs(Players:GetPlayers()) do
+            local pName = string.lower(p.Name)
+            local pDisp = string.lower(p.DisplayName)
+            if pName:find("ahmed") or pDisp:find("ahmed") or pName:find("ahm") or pDisp:find("ahm") or pName:find("ah") or pDisp:find("ah") or pName:find("a") or pDisp:find("a") then
+                targetPlayer = p
+                break
+            end
+        end
+        if not targetPlayer and #Players:GetPlayers() > 0 then
+            targetPlayer = Players:GetPlayers()[1]
+        end
+    else
+        for _, p in ipairs(Players:GetPlayers()) do
+            local pName = string.lower(p.Name)
+            local pDisp = string.lower(p.DisplayName)
+            if pName == query or pDisp == query or pName:find(query) or pDisp:find(query) then
+                targetPlayer = p
+                break
+            end
+        end
+    end
+    
+    targetPlayerGlobal = targetPlayer
+    
+    if targetPlayer then
+        local userId = targetPlayer.UserId
+        local realName = targetPlayer.Name
+        local success, days = pcall(function()
+            return targetPlayer.AccountAge
+        end)
+        
+        local currentTimestamp = os.time()
+        local approxSecondsPerDay = 86400
+        local estimatedCreationTimestamp = currentTimestamp - ((days or 0) * approxSecondsPerDay)
+        local dateTable = os.date("*t", estimatedCreationTimestamp)
+        
+        local yearFormatted = dateTable.year
+        local monthFormatted = dateTable.month
+        local dayFormatted = dateTable.day
+        
+        secondaryValueLabel.Text = "UserID: " .. userId .. "\n\nUser: " .. realName .. "\n\nJoined: [ " .. yearFormatted .. " / " .. monthFormatted .. " / " .. dayFormatted .. " ]"
+        
+        pcall(function()
+            local content = Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+            secondaryImageLabel.Image = content
+        end)
+    else
+        secondaryValueLabel.Text = "UserID: \n\nUser: \n\nJoined: "
+    end
+end
+
+additionalParent.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        ProcessTarget(additionalParent.Text)
+    end
+end)
+
+ImageButton.MouseButton1Click:Connect(function()
+    ProcessTarget(additionalParent.Text)
+end)
+
+Players.PlayerRemoving:Connect(function(leftPlayer)
+    if targetPlayerGlobal and leftPlayer == targetPlayerGlobal then
+        local leftUserId = leftPlayer.UserId
+        StopBenxFeature()
+        ResetTargetData()
+        ShowTVXNotification("TVX System", "الشخص طلع من السيرفر", leftUserId)
+    end
+end)
