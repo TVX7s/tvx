@@ -149,10 +149,10 @@ FloatingButton.AnchorPoint = Vector2.new(0, 0.5)
 FloatingButton.Position = UDim2.new(0, 15, 0.5, 0)
 FloatingButton.Size = UDim2.new(0, 45, 0, 45)
 FloatingButton.Font = Enum.Font.GothamBold
-FloatingButton.Text = "TVX"
+FloatingButton.Text = "TBQS"
 FloatingButton.TextColor3 = Color3.fromRGB(240, 240, 240)
 FloatingButton.TextTransparency = 0.3
-FloatingButton.TextSize = 20
+FloatingButton.TextSize = 17
 FloatingButton.Active = true
 FloatingButton.Draggable = true
 
@@ -195,9 +195,9 @@ TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 TitleBar.BackgroundTransparency = 0.3
 TitleBar.Size = UDim2.new(1, 0, 0, 45)
 TitleBar.Font = Enum.Font.GothamBold
-TitleBar.Text = "TVX"
+TitleBar.Text = "TBQS: THE MERCY SCRIPT "
 TitleBar.TextColor3 = Color3.fromRGB(240, 240, 240)
-TitleBar.TextSize = 16
+TitleBar.TextSize = 30
 TitleBar.TextXAlignment = Enum.TextXAlignment.Center
 
 local TitleCorner = Instance.new("UICorner")
@@ -209,7 +209,7 @@ CreateAnimatedStroke(TitleBar)
 local CornerImage = Instance.new("ImageLabel")
 CornerImage.Name = "CornerImage"
 CornerImage.Parent = MainFrame
-CornerImage.Size = UDim2.new(0, 124, 0, 109)
+CornerImage.Size = UDim2.new(0, 122, 0, 108)
 CornerImage.Position = UDim2.new(0, -55, 0, -54)
 CornerImage.Rotation = -21
 CornerImage.BackgroundTransparency = 1
@@ -721,7 +721,7 @@ secondaryTextBox.Position = UDim2.new(0, 265, 0, 60)
 secondaryTextBox.Size = UDim2.new(0, 40, 0, 40)
 secondaryTextBox.Font = Enum.Font.Gotham
 secondaryTextBox.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
-secondaryTextBox.PlaceholderText = "سرعةn/الكلام"
+secondaryTextBox.PlaceholderText = "سرعة الكلام"
 secondaryTextBox.Text = "0.1"
 secondaryTextBox.TextColor3 = Color3.fromRGB(20, 20, 20)
 secondaryTextBox.TextSize = 16
@@ -1702,6 +1702,13 @@ TpButton.MouseButton1Click:Connect(function()
         ShowTVXNotification("TVX", "لازم تكتب اسم الشخص عشان تقدر تستهدفه")
         return
     end
+
+    pcall(function()
+        if Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            Players.LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        end
+    end)
+end)
 
 Players.PlayerRemoving:Connect(function(leftPlayer)
     if targetPlayerGlobal and leftPlayer == targetPlayerGlobal then
