@@ -209,8 +209,8 @@ CreateAnimatedStroke(TitleBar)
 local CornerImage = Instance.new("ImageLabel")
 CornerImage.Name = "CornerImage"
 CornerImage.Parent = MainFrame
-CornerImage.Size = UDim2.new(0, 122, 0, 108)
-CornerImage.Position = UDim2.new(0, -55, 0, 54)
+CornerImage.Size = UDim2.new(0, 124, 0, 109)
+CornerImage.Position = UDim2.new(0, -55, 0, -54)
 CornerImage.Rotation = -21
 CornerImage.BackgroundTransparency = 1
 CornerImage.Image = "rbxthumb://type=Asset&w=420&h=420&id=97018469896086"
