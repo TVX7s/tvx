@@ -607,6 +607,34 @@ TargetPage.Position = UDim2.new(0, 175, 0, 65)
 TargetPage.Size = UDim2.new(1, -190, 1, -75)
 TargetPage.Visible = false
 
+local PlayerSectionButton = Instance.new("TextButton")
+PlayerSectionButton.Name = "Player_Section_Button"
+PlayerSectionButton.Parent = Sidebar
+PlayerSectionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+PlayerSectionButton.BackgroundTransparency = 0.3
+PlayerSectionButton.BorderSizePixel = 0
+PlayerSectionButton.Size = UDim2.new(1, 0, 0, 35)
+PlayerSectionButton.LayoutOrder = 3
+PlayerSectionButton.Font = Enum.Font.GothamBold
+PlayerSectionButton.Text = "اللاعب | Player"
+PlayerSectionButton.TextColor3 = Color3.fromRGB(240, 240, 240)
+PlayerSectionButton.TextSize = 12
+PlayerSectionButton.TextWrapped = true
+
+local PlayerButtonCorner = Instance.new("UICorner")
+PlayerButtonCorner.CornerRadius = UDim.new(0, 16)
+PlayerButtonCorner.Parent = PlayerSectionButton
+
+CreateAnimatedStroke(PlayerSectionButton)
+
+local PlayerPage = Instance.new("Frame")
+PlayerPage.Name = "PlayerPage"
+PlayerPage.Parent = ContentArea
+PlayerPage.BackgroundTransparency = 1
+PlayerPage.Position = UDim2.new(0, 175, 0, 65)
+PlayerPage.Size = UDim2.new(1, -190, 1, -75)
+PlayerPage.Visible = false
+
 local TrollSectionButton = Instance.new("TextButton")
 TrollSectionButton.Name = "Troll_Section_Button"
 TrollSectionButton.Parent = Sidebar
@@ -614,7 +642,7 @@ TrollSectionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 TrollSectionButton.BackgroundTransparency = 0.3
 TrollSectionButton.BorderSizePixel = 0
 TrollSectionButton.Size = UDim2.new(1, 0, 0, 35)
-TrollSectionButton.LayoutOrder = 3
+TrollSectionButton.LayoutOrder = 4
 TrollSectionButton.Font = Enum.Font.GothamBold
 TrollSectionButton.Text = "التخريب | Troll"
 TrollSectionButton.TextColor3 = Color3.fromRGB(240, 240, 240)
@@ -641,12 +669,21 @@ local ScrollingFrame = TrollPage
 HomeSectionButton.MouseButton1Click:Connect(function()
     Homespage.Visible = true
     TargetPage.Visible = false
+    PlayerPage.Visible = false
     TrollPage.Visible = false
 end)
 
 TargetSectionButton.MouseButton1Click:Connect(function()
     TargetPage.Visible = true
     Homespage.Visible = false
+    PlayerPage.Visible = false
+    TrollPage.Visible = false
+end)
+
+PlayerSectionButton.MouseButton1Click:Connect(function()
+    PlayerPage.Visible = true
+    Homespage.Visible = false
+    TargetPage.Visible = false
     TrollPage.Visible = false
 end)
 
@@ -654,6 +691,7 @@ TrollSectionButton.MouseButton1Click:Connect(function()
     TrollPage.Visible = true
     Homespage.Visible = false
     TargetPage.Visible = false
+    PlayerPage.Visible = false
 end)
 
 local TextBox = Instance.new("TextBox")
@@ -890,6 +928,164 @@ outerTextButton.MouseButton1Click:Connect(function()
 end)
 
 local alternateParent = TargetPage
+local secondaryParent = PlayerPage
+
+local sourceTextButton = Instance.new("TextButton")
+local alternateTextBox = Instance.new("TextBox")
+local additionalTextBox = Instance.new("TextBox")
+local textButtonVariantA = Instance.new("TextButton")
+local updateWsButton = Instance.new("TextButton")
+local updateJpButton = Instance.new("TextButton")
+
+	sourceTextButton.Name = "WalkSpeed_Button"
+	sourceTextButton.Parent = secondaryParent
+	sourceTextButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+	sourceTextButton.BackgroundTransparency = 0.5
+	sourceTextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	sourceTextButton.BorderSizePixel = 0
+	sourceTextButton.Position = UDim2.new(0, 25, 0, 25)
+	sourceTextButton.Size = UDim2.new(0, 140, 0, 30)
+	sourceTextButton.Font = Enum.Font.Oswald
+	sourceTextButton.Text = "Ws |السرعه"
+	sourceTextButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+	sourceTextButton.TextScaled = true
+	sourceTextButton.TextSize = 14
+	sourceTextButton.TextWrapped = true
+
+	alternateTextBox.Name = "WalkSpeed_Input"
+	alternateTextBox.Parent = secondaryParent
+	alternateTextBox.BackgroundColor3 = Color3.fromRGB(secondaryCapturedState, capturedState, capturedResult)
+	alternateTextBox.BackgroundTransparency = 0.3
+	alternateTextBox.BorderColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+	alternateTextBox.Position = UDim2.new(0, 210, 0, 25)
+	alternateTextBox.Size = UDim2.new(0, 140, 0, 30)
+	alternateTextBox.Font = Enum.Font.Gotham
+	alternateTextBox.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+
+	if game.PlaceId ~= 11379739543 then
+		alternateTextBox.PlaceholderText = "Number [1-99999]"
+	else
+		alternateTextBox.PlaceholderText = "Number [1-10]"
+	end
+
+	alternateTextBox.Text = ""
+	alternateTextBox.TextColor3 = Color3.fromRGB(20, 20, 20)
+	alternateTextBox.TextSize = 14
+	alternateTextBox.TextWrapped = true
+
+	additionalTextBox.Name = "JumpPower_Input"
+	additionalTextBox.Parent = secondaryParent
+	additionalTextBox.BackgroundColor3 = Color3.fromRGB(secondaryCapturedState, capturedState, capturedResult)
+	additionalTextBox.BackgroundTransparency = 0.3
+	additionalTextBox.BorderColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+	additionalTextBox.Position = UDim2.new(0, 210, 0, 75)
+	additionalTextBox.Size = UDim2.new(0, 140, 0, 30)
+	additionalTextBox.Font = Enum.Font.Gotham
+	additionalTextBox.PlaceholderColor3 = Color3.fromRGB(0, 0, 0)
+	additionalTextBox.PlaceholderText = "Number [1-99999]"
+	additionalTextBox.Text = ""
+	additionalTextBox.TextColor3 = Color3.fromRGB(20, 20, 20)
+	additionalTextBox.TextSize = 14
+	additionalTextBox.TextWrapped = true
+
+textButtonVariantA.Name = "JumpPower_Button"
+	textButtonVariantA.Parent = secondaryParent
+	textButtonVariantA.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+	textButtonVariantA.BackgroundTransparency = 0.5
+	textButtonVariantA.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textButtonVariantA.BorderSizePixel = 0
+	textButtonVariantA.Position = UDim2.new(0, 25, 0, 75)
+	textButtonVariantA.Size = UDim2.new(0, 140, 0, 30)
+	textButtonVariantA.Font = Enum.Font.Oswald
+	textButtonVariantA.Text = "النط | Jump"
+	textButtonVariantA.TextColor3 = Color3.fromRGB(20, 20, 20)
+	textButtonVariantA.TextScaled = true
+	textButtonVariantA.TextSize = 14
+	textButtonVariantA.TextWrapped = true
+
+updateWsButton.Name = "UpdateWs_Button"
+updateWsButton.Parent = secondaryParent
+updateWsButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+updateWsButton.BackgroundTransparency = 0.5
+updateWsButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+updateWsButton.BorderSizePixel = 0
+updateWsButton.Position = UDim2.new(0, 360, 0, 25)
+updateWsButton.Size = UDim2.new(0, 30, 0, 30)
+updateWsButton.Font = Enum.Font.Oswald
+updateWsButton.Text = "🔄"
+updateWsButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+updateWsButton.TextScaled = true
+updateWsButton.TextSize = 14
+updateWsButton.TextWrapped = true
+
+updateJpButton.Name = "UpdateJp_Button"
+updateJpButton.Parent = secondaryParent
+updateJpButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+updateJpButton.BackgroundTransparency = 0.5
+updateJpButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+updateJpButton.BorderSizePixel = 0
+updateJpButton.Position = UDim2.new(0, 360, 0, 75)
+updateJpButton.Size = UDim2.new(0, 30, 0, 30)
+updateJpButton.Font = Enum.Font.Oswald
+updateJpButton.Text = "🔄"
+updateJpButton.TextColor3 = Color3.fromRGB(20, 20, 0)
+updateJpButton.TextScaled = true
+updateJpButton.TextSize = 14
+updateJpButton.TextWrapped = true
+
+CreateAnimatedStroke(sourceTextButton)
+local WsInputCorner = Instance.new("UICorner")
+WsInputCorner.CornerRadius = UDim.new(0, 12)
+WsInputCorner.Parent = alternateTextBox
+CreateAnimatedStroke(alternateTextBox)
+
+CreateAnimatedStroke(textButtonVariantA)
+local JpInputCorner = Instance.new("UICorner")
+JpInputCorner.CornerRadius = UDim.new(0, 12)
+JpInputCorner.Parent = additionalTextBox
+CreateAnimatedStroke(additionalTextBox)
+
+CreateAnimatedStroke(updateWsButton)
+CreateAnimatedStroke(updateJpButton)
+
+sourceTextButton.MouseButton1Click:Connect(function()
+    local val = tonumber(alternateTextBox.Text)
+    if val and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = val
+    end
+end)
+
+textButtonVariantA.MouseButton1Click:Connect(function()
+    local val = tonumber(additionalTextBox.Text)
+    if val and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum.UseJumpPower then
+            hum.JumpPower = val
+        else
+            hum.JumpHeight = val
+        end
+    end
+end)
+
+local function updateCurrentWalkSpeed()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        alternateTextBox.Text = tostring(LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed)
+    end
+end
+
+local function updateCurrentJumpPower()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum.UseJumpPower then
+            additionalTextBox.Text = tostring(hum.JumpPower)
+        else
+            additionalTextBox.Text = tostring(hum.JumpHeight)
+        end
+    end
+end
+
+updateWsButton.MouseButton1Click:Connect(updateCurrentWalkSpeed)
+updateJpButton.MouseButton1Click:Connect(updateCurrentJumpPower)
 
 local secondaryImageLabel = Instance.new("ImageLabel")
 secondaryImageLabel.Name = "TargetImage"
@@ -1705,27 +1901,7 @@ TpButton.MouseButton1Click:Connect(function()
 
     pcall(function()
         if Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            Players.LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+            Players.LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
         end
     end)
-end)
-
-Players.PlayerRemoving:Connect(function(leftPlayer)
-    if targetPlayerGlobal and leftPlayer == targetPlayerGlobal then
-        local leftUserId = leftPlayer.UserId
-        StopBenxFeature()
-        StopFlingFeature()
-        StopWatchFeature()
-        StopHearFeature()
-        StopBangedFeature()
-        ResetTargetData()
-        ShowTVXNotification("TVX System", "الشخص طلع من السيرفر", leftUserId)
-    end
-end)
-
-Players.PlayerAdded:Connect(function(joinedPlayer)
-    if targetPlayerGlobal and joinedPlayer.UserId == targetPlayerGlobal.UserId then
-        local joinedUserId = joinedPlayer.UserId
-        ShowTVXNotification("TVX System", "اللاعب رجع دخل السيرفر", joinedUserId)
-    end
 end)
