@@ -197,7 +197,7 @@ TitleBar.Size = UDim2.new(1, 0, 0, 45)
 TitleBar.Font = Enum.Font.GothamBold
 TitleBar.Text = "TBQS: THE MERCY SCRIPT "
 TitleBar.TextColor3 = Color3.fromRGB(240, 240, 240)
-TitleBar.TextSize = 30
+TitleBar.TextSize = 39
 TitleBar.TextXAlignment = Enum.TextXAlignment.Center
 
 local TitleCorner = Instance.new("UICorner")
