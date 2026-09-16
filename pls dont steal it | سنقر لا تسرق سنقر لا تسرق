@@ -939,17 +939,16 @@ local updateJpButton = Instance.new("TextButton")
 
 	sourceTextButton.Name = "WalkSpeed_Button"
 	sourceTextButton.Parent = secondaryParent
-	sourceTextButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
-	sourceTextButton.BackgroundTransparency = 0.5
+	sourceTextButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	sourceTextButton.BackgroundTransparency = 0.3
 	sourceTextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	sourceTextButton.BorderSizePixel = 0
 	sourceTextButton.Position = UDim2.new(0, 25, 0, 25)
 	sourceTextButton.Size = UDim2.new(0, 140, 0, 30)
-	sourceTextButton.Font = Enum.Font.Oswald
-	sourceTextButton.Text = "Ws |السرعه"
-	sourceTextButton.TextColor3 = Color3.fromRGB(20, 20, 20)
-	sourceTextButton.TextScaled = true
-	sourceTextButton.TextSize = 14
+	sourceTextButton.Font = Enum.Font.GothamBold
+	sourceTextButton.Text = "Ws | السرعه"
+	sourceTextButton.TextColor3 = Color3.fromRGB(240, 240, 240)
+	sourceTextButton.TextSize = 16
 	sourceTextButton.TextWrapped = true
 
 	alternateTextBox.Name = "WalkSpeed_Input"
@@ -990,22 +989,21 @@ local updateJpButton = Instance.new("TextButton")
 
 textButtonVariantA.Name = "JumpPower_Button"
 	textButtonVariantA.Parent = secondaryParent
-	textButtonVariantA.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
-	textButtonVariantA.BackgroundTransparency = 0.5
+	textButtonVariantA.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	textButtonVariantA.BackgroundTransparency = 0.3
 	textButtonVariantA.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	textButtonVariantA.BorderSizePixel = 0
 	textButtonVariantA.Position = UDim2.new(0, 25, 0, 75)
 	textButtonVariantA.Size = UDim2.new(0, 140, 0, 30)
-	textButtonVariantA.Font = Enum.Font.Oswald
-	textButtonVariantA.Text = "النط | Jump"
-	textButtonVariantA.TextColor3 = Color3.fromRGB(20, 20, 20)
-	textButtonVariantA.TextScaled = true
-	textButtonVariantA.TextSize = 14
+	textButtonVariantA.Font = Enum.Font.GothamBold
+	textButtonVariantA.Text = "Jump | النط"
+	textButtonVariantA.TextColor3 = Color3.fromRGB(240, 240, 240)
+	textButtonVariantA.TextSize = 16
 	textButtonVariantA.TextWrapped = true
 
 updateWsButton.Name = "UpdateWs_Button"
 updateWsButton.Parent = secondaryParent
-updateWsButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+updateWsButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 updateWsButton.BackgroundTransparency = 0.5
 updateWsButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 updateWsButton.BorderSizePixel = 0
@@ -1013,14 +1011,18 @@ updateWsButton.Position = UDim2.new(0, 360, 0, 25)
 updateWsButton.Size = UDim2.new(0, 30, 0, 30)
 updateWsButton.Font = Enum.Font.Oswald
 updateWsButton.Text = "🔄"
-updateWsButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+updateWsButton.TextColor3 = Color3.fromRGB(240, 240, 240)
 updateWsButton.TextScaled = true
 updateWsButton.TextSize = 14
 updateWsButton.TextWrapped = true
 
+local UpdateWsCorner = Instance.new("UICorner")
+UpdateWsCorner.CornerRadius = UDim.new(1, 0)
+UpdateWsCorner.Parent = updateWsButton
+
 updateJpButton.Name = "UpdateJp_Button"
 updateJpButton.Parent = secondaryParent
-updateJpButton.BackgroundColor3 = Color3.fromRGB(capturedR, secondaryCapturedG, b)
+updateJpButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 updateJpButton.BackgroundTransparency = 0.5
 updateJpButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 updateJpButton.BorderSizePixel = 0
@@ -1028,18 +1030,30 @@ updateJpButton.Position = UDim2.new(0, 360, 0, 75)
 updateJpButton.Size = UDim2.new(0, 30, 0, 30)
 updateJpButton.Font = Enum.Font.Oswald
 updateJpButton.Text = "🔄"
-updateJpButton.TextColor3 = Color3.fromRGB(20, 20, 0)
+updateJpButton.TextColor3 = Color3.fromRGB(240, 240, 240)
 updateJpButton.TextScaled = true
 updateJpButton.TextSize = 14
 updateJpButton.TextWrapped = true
 
+local UpdateJpCorner = Instance.new("UICorner")
+UpdateJpCorner.CornerRadius = UDim.new(1, 0)
+UpdateJpCorner.Parent = updateJpButton
+
+local WsBtnCorner = Instance.new("UICorner")
+WsBtnCorner.CornerRadius = UDim.new(0, 16)
+WsBtnCorner.Parent = sourceTextButton
 CreateAnimatedStroke(sourceTextButton)
+
 local WsInputCorner = Instance.new("UICorner")
 WsInputCorner.CornerRadius = UDim.new(0, 12)
 WsInputCorner.Parent = alternateTextBox
 CreateAnimatedStroke(alternateTextBox)
 
+local JpBtnCorner = Instance.new("UICorner")
+JpBtnCorner.CornerRadius = UDim.new(0, 16)
+JpBtnCorner.Parent = textButtonVariantA
 CreateAnimatedStroke(textButtonVariantA)
+
 local JpInputCorner = Instance.new("UICorner")
 JpInputCorner.CornerRadius = UDim.new(0, 12)
 JpInputCorner.Parent = additionalTextBox
@@ -1359,12 +1373,6 @@ TpButton.Text = "تنقل"
 TpButton.TextColor3 = Color3.fromRGB(240, 240, 240)
 TpButton.TextSize = 16
 TpButton.TextWrapped = true
-
-local TpCorner = Instance.new("UICorner")
-TpCorner.CornerRadius = UDim.new(0, 16)
-TpCorner.Parent = TpButton
-
-CreateAnimatedStroke(TpButton)
 
 local indicatorRotatedState = false
 local function ToggleBenxIndicatorRotation()
@@ -1885,6 +1893,17 @@ ImageButton.MouseButton1Click:Connect(function()
         ProcessTarget(additionalParent.Text)
     end
 end)
+
+CreateAnimatedStroke(TpButton)
+local TpCorner = Instance.new("UICorner")
+TpCorner.CornerRadius = UDim.new(0, 16)
+TpButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TpButton.BackgroundTransparency = 0.3
+TpButton.Font = Enum.Font.GothamBold
+TpButton.TextColor3 = Color3.fromRGB(240, 240, 240)
+TpButton.TextSize = 16
+TpButton.BorderSizePixel = 0
+TpCorner.Parent = TpButton
 
 TpButton.MouseButton1Click:Connect(function()
     local targetNameText = additionalParent.Text
